@@ -2,24 +2,30 @@ import { useState } from "react";
 import { Student } from "../types/Student";
 
 interface Props {
+  student?: Student;
   onSubmit: (student: Partial<Student>) => void;
-  initialData?: Partial<Student>;
 }
 
-const StudentForm = ({ onSubmit, initialData }: Props) => {
-  const [firstName, setFirstName] = useState(initialData?.first_name || "");
-  const [lastName, setLastName] = useState(initialData?.last_name || "");
+const StudentForm = ({ student, onSubmit }: Props) => {
+  const [name, setName] = useState(student?.name || "");
+  const [email, setEmail] = useState(student?.email || "");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit({ first_name: firstName, last_name: lastName, enrollment_date: new Date().toISOString() });
+    onSubmit({ name, email });
   };
 
   return (
     <form onSubmit={handleSubmit}>
-      <input value={firstName} onChange={(e) => setFirstName(e.target.value)} placeholder="First Name" />
-      <input value={lastName} onChange={(e) => setLastName(e.target.value)} placeholder="Last Name" />
-      <button type="submit">Save Student</button>
+      <div>
+        <label>Name:</label>
+        <input value={name} onChange={(e) => setName(e.target.value)} />
+      </div>
+      <div>
+        <label>Email:</label>
+        <input value={email} onChange={(e) => setEmail(e.target.value)} />
+      </div>
+      <button type="submit">Save</button>
     </form>
   );
 };

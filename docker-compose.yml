@@ -1,16 +1,16 @@
 version: "3.9"
 services:
   backend:
-    build: ./backend
+    build: ./Backend
     ports:
-      - "8000:8000"
+      - "8001:8001"
     volumes:
       - ./backend:/app
     environment:
       - PYTHONUNBUFFERED=1
 
   frontend:
-    build: ./frontend
+    build: ./Frontend
     ports:
       - "3000:3000"
     environment:

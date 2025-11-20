@@ -2,36 +2,40 @@ import { useState } from "react";
 import { Book } from "../types/Book";
 
 interface Props {
+  book?: Book;
   onSubmit: (book: Partial<Book>) => void;
-  initialData?: Partial<Book>;
 }
 
-const BookForm = ({ onSubmit, initialData }: Props) => {
-  const [title, setTitle] = useState(initialData?.title || "");
-  const [author, setAuthor] = useState(initialData?.author || "");
-  const [totalCopies, setTotalCopies] = useState(initialData?.total_copies || 1);
+const BookForm = ({ book, onSubmit }: Props) => {
+  const [title, setTitle] = useState(book?.title || "");
+  const [author, setAuthor] = useState(book?.author || "");
+  const [copies, setCopies] = useState(book?.copies || 1);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit({
-      title,
-      author,
-      total_copies: totalCopies,
-      available_copies: totalCopies,
-    });
+    onSubmit({ title, author, copies });
   };
 
   return (
     <form onSubmit={handleSubmit}>
-      <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Title" />
-      <input value={author} onChange={(e) => setAuthor(e.target.value)} placeholder="Author" />
-      <input
-        type="number"
-        value={totalCopies}
-        onChange={(e) => setTotalCopies(Number(e.target.value))}
-        placeholder="Total Copies"
-      />
-      <button type="submit">Save Book</button>
+      <div>
+        <label>Title:</label>
+        <input value={title} onChange={(e) => setTitle(e.target.value)} />
+      </div>
+      <div>
+        <label>Author:</label>
+        <input value={author} onChange={(e) => setAuthor(e.target.value)} />
+      </div>
+      <div>
+        <label>Copies:</label>
+        <input
+          type="number"
+          min={1}
+          value={copies}
+          onChange={(e) => setCopies(Number(e.target.value))}
+        />
+      </div>
+      <button type="submit">Save</button>
     </form>
   );
 };
