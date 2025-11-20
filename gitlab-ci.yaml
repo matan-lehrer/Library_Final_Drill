@@ -1,0 +1,83 @@
+stages:
+  - lint
+  - test
+  - build
+  - deploy
+
+variables:
+  DOCKER_HOST: tcp://docker:2375/
+  DOCKER_TLS_CERTDIR: ""
+
+services:
+  - docker:24-dind
+
+before_script:
+  - docker info
+
+# ----------------------------
+# LINTING
+# ----------------------------
+lint-frontend:
+  stage: lint
+  image: node:20
+  script:
+    - cd frontend
+    - npm ci
+    - npx eslint src --max-warnings=0
+
+lint-backend:
+  stage: lint
+  image: python:3.13
+  script:
+    - pip install flake8
+    - flake8 backend
+
+# ----------------------------
+# TESTING
+# ----------------------------
+test-backend:
+  stage: test
+  image: python:3.13
+  script:
+    - pip install -r backend/requirments.txt
+    - pip install pytest
+    - cd backend
+    - pytest --maxfail=1 --disable-warnings -v
+
+test-frontend:
+  stage: test
+  image: node:20
+  script:
+    - cd frontend
+    - npm ci
+    - npm test -- --watchAll=false
+
+# ----------------------------
+# BUILD DOCKER IMAGES
+# ----------------------------
+build-backend:
+  stage: build
+  image: docker:24
+  script:
+    - docker build -t library-final-drill-backend backend
+  only:
+    - main
+
+build-frontend:
+  stage: build
+  image: docker:24
+  script:
+    - docker build -t library-final-drill-frontend frontend
+  only:
+    - main
+
+# ----------------------------
+# DEPLOY (run all containers)
+# ----------------------------
+deploy:
+  stage: deploy
+  image: docker/compose:2.17.2
+  script:
+    - docker-compose -f docker-compose.ci.yml up -d --build
+  only:
+    - main
