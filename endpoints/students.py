@@ -34,7 +34,7 @@ def update_student(student_id: int, updated_student: StudentCreate, db: Session 
     student = db.query(StudentModel).filter(StudentModel.student_id == student_id).first()
     if not student:
         raise HTTPException(status_code=404, detail="Student not found")
-    for key, value in updated_student.dict().items():
+    for key, value in updated_student.model_dump().items():
         setattr(student, key, value)
     db.commit()
     db.refresh(student)

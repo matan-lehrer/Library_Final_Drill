@@ -11,7 +11,7 @@ def create_book_loan(db: Session, loan: BookLoanCreate):
         raise ValueError("No available copies of this book")
     book.available_copies -= 1
 
-    db_loan = BookLoanModel(**loan.dict())
+    db_loan = BookLoanModel(**loan.model_dump())
     db.add(db_loan)
     db.commit()
     db.refresh(db_loan)

@@ -34,7 +34,7 @@ def update_book(book_id: int, updated_book: BookCreate, db: Session = Depends(ge
     book = db.query(BookModel).filter(BookModel.book_id == book_id).first()
     if not book:
         raise HTTPException(status_code=404, detail="Book not found")
-    for key, value in updated_book.dict().items():
+    for key, value in updated_book.model_dump().items():
         setattr(book, key, value)
     db.commit()
     db.refresh(book)

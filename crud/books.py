@@ -3,7 +3,7 @@ from models.books import Book as BookModel
 from schemas.books import BookCreate, Book
 
 def create_book(db: Session, book: BookCreate):
-    db_book = BookModel(**book.dict())
+    db_book = BookModel(**book.model_dump())
     db.add(db_book)
     db.commit()
     db.refresh(db_book)
