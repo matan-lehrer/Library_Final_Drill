@@ -3,7 +3,16 @@ import { useState } from "react";
 import { BookLoan } from "../types/BookLoan";
 import { Book } from "../types/Book";
 import { Student } from "../types/Student";
-import { Paper, Box, Button, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
+import {
+  Paper,
+  Box,
+  Button,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  TextField
+} from "@mui/material";
 
 interface Props {
   books: Book[];
@@ -14,13 +23,26 @@ interface Props {
 const LoanForm = ({ books, students, onSubmit }: Props) => {
   const [bookId, setBookId] = useState<number | "">("");
   const [studentId, setStudentId] = useState<number | "">("");
+  const [loanDate, setLoanDate] = useState<string>(new Date().toISOString().split("T")[0]);
+  const [dueDate, setDueDate] = useState<string>("");
+  const [returnDate, setReturnDate] = useState<string | null>("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (bookId && studentId) {
-      onSubmit({ book_id: bookId, student_id: studentId });
+    if (bookId && studentId && loanDate && dueDate) {
+      onSubmit({
+        book_id: bookId,
+        student_id: studentId,
+        loan_date: loanDate,
+        due_date: dueDate,
+        return_date: returnDate || null
+      });
+      // reset form
       setBookId("");
       setStudentId("");
+      setLoanDate(new Date().toISOString().split("T")[0]);
+      setDueDate("");
+      setReturnDate("");
     }
   };
 
@@ -66,6 +88,28 @@ const LoanForm = ({ books, students, onSubmit }: Props) => {
             ))}
           </Select>
         </FormControl>
+
+        <TextField
+          label="Loan Date"
+          type="date"
+          value={loanDate}
+          onChange={(e) => setLoanDate(e.target.value)}
+          InputLabelProps={{ shrink: true }}
+        />
+        <TextField
+          label="Due Date"
+          type="date"
+          value={dueDate}
+          onChange={(e) => setDueDate(e.target.value)}
+          InputLabelProps={{ shrink: true }}
+        />
+        <TextField
+          label="Return Date"
+          type="date"
+          value={returnDate || ""}
+          onChange={(e) => setReturnDate(e.target.value)}
+          InputLabelProps={{ shrink: true }}
+        />
 
         <Button variant="contained" type="submit">
           Issue Loan
