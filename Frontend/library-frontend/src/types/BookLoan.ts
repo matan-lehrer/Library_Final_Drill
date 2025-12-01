@@ -1,3 +1,4 @@
+// src/types/BookLoan.ts
 export interface BookLoan {
   id: number;
   book_id: number;

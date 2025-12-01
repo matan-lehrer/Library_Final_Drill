@@ -4,6 +4,8 @@ import { Book } from "../types/Book";
 import { booksService } from "../api/books";
 import BookForm from "../components/BookForm";
 import {
+  Box,
+  Typography,
   Table,
   TableBody,
   TableCell,
@@ -11,9 +13,7 @@ import {
   TableHead,
   TableRow,
   Paper,
-  Button,
-  Typography,
-  Box
+  Button
 } from "@mui/material";
 
 const BooksPage = () => {
@@ -56,7 +56,10 @@ const BooksPage = () => {
             <TableRow>
               <TableCell>Title</TableCell>
               <TableCell>Author</TableCell>
-              <TableCell>Copies</TableCell>
+              <TableCell>Category</TableCell>
+              <TableCell>Edition</TableCell>
+              <TableCell>Total Copies</TableCell>
+              <TableCell>Available Copies</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -65,12 +68,23 @@ const BooksPage = () => {
               <TableRow key={b.id}>
                 <TableCell>{b.title}</TableCell>
                 <TableCell>{b.author}</TableCell>
-                <TableCell>{b.copies}</TableCell>
+                <TableCell>{b.category}</TableCell>
+                <TableCell>{b.edition}</TableCell>
+                <TableCell>{b.total_copies}</TableCell>
+                <TableCell>{b.available_copies}</TableCell>
                 <TableCell>
-                  <Button onClick={() => setEditingBook(b)} variant="outlined" sx={{ mr: 1 }}>
+                  <Button
+                    variant="outlined"
+                    sx={{ mr: 1 }}
+                    onClick={() => setEditingBook(b)}
+                  >
                     Edit
                   </Button>
-                  <Button onClick={() => handleDelete(b.id)} variant="outlined" color="error">
+                  <Button
+                    variant="outlined"
+                    color="error"
+                    onClick={() => handleDelete(b.id)}
+                  >
                     Delete
                   </Button>
                 </TableCell>

@@ -1,21 +1,55 @@
 // src/components/BookForm.tsx
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Book } from "../types/Book";
-import { TextField, Button, Paper, Box } from "@mui/material";
+import { Box, Paper, TextField, Button } from "@mui/material";
 
 interface Props {
   book?: Book;
-  onSubmit: (book: Partial<Book>) => void;
+  onSubmit: (bookData: Partial<Book>) => void;
 }
 
 const BookForm = ({ book, onSubmit }: Props) => {
-  const [title, setTitle] = useState(book?.title || "");
-  const [author, setAuthor] = useState(book?.author || "");
-  const [copies, setCopies] = useState(book?.copies || 1);
+  const [title, setTitle] = useState("");
+  const [author, setAuthor] = useState("");
+  const [category, setCategory] = useState("");
+  const [edition, setEdition] = useState("");
+  const [totalCopies, setTotalCopies] = useState<number>(1);
+  const [availableCopies, setAvailableCopies] = useState<number>(1);
+
+  useEffect(() => {
+    if (book) {
+      setTitle(book.title);
+      setAuthor(book.author);
+      setCategory(book.category);
+      setEdition(book.edition);
+      setTotalCopies(book.total_copies);
+      setAvailableCopies(book.available_copies);
+    } else {
+      setTitle("");
+      setAuthor("");
+      setCategory("");
+      setEdition("");
+      setTotalCopies(1);
+      setAvailableCopies(1);
+    }
+  }, [book]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit({ title, author, copies });
+    onSubmit({
+      title,
+      author,
+      category,
+      edition,
+      total_copies: totalCopies,
+      available_copies: availableCopies,
+    });
+    setTitle("");
+    setAuthor("");
+    setCategory("");
+    setEdition("");
+    setTotalCopies(1);
+    setAvailableCopies(1);
   };
 
   return (
@@ -29,24 +63,44 @@ const BookForm = ({ book, onSubmit }: Props) => {
           label="Title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          fullWidth
+          required
         />
         <TextField
           label="Author"
           value={author}
           onChange={(e) => setAuthor(e.target.value)}
-          fullWidth
+          required
         />
         <TextField
-          label="Copies"
-          type="number"
-          inputProps={{ min: 1 }}
-          value={copies}
-          onChange={(e) => setCopies(Number(e.target.value))}
-          sx={{ width: 120 }}
+          label="Category"
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+          required
         />
-        <Button variant="contained" type="submit">
-          Save
+        <TextField
+          label="Edition"
+          value={edition}
+          onChange={(e) => setEdition(e.target.value)}
+          required
+        />
+        <TextField
+          label="Total Copies"
+          type="number"
+          value={totalCopies}
+          onChange={(e) => setTotalCopies(Number(e.target.value))}
+          required
+          inputProps={{ min: 1 }}
+        />
+        <TextField
+          label="Available Copies"
+          type="number"
+          value={availableCopies}
+          onChange={(e) => setAvailableCopies(Number(e.target.value))}
+          required
+          inputProps={{ min: 0, max: totalCopies }}
+        />
+        <Button type="submit" variant="contained">
+          {book ? "Update Book" : "Add Book"}
         </Button>
       </Box>
     </Paper>
