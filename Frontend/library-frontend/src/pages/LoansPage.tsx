@@ -58,8 +58,10 @@ const LoansPage = () => {
   }, []);
 
   const getBookTitle = (id: number) => books.find((b) => b.id === id)?.title || id;
-  const getStudentName = (id: number) =>
-    students.find((s) => s.id === id)?.name || id;
+  const getStudentName = (id: number) => {
+    const s = students.find((s) => s.id === id);
+    return s ? `${s.first_name} ${s.last_name}` : id;
+  };
 
   return (
     <Box>

@@ -1,46 +1,69 @@
 // src/components/StudentForm.tsx
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Student } from "../types/Student";
-import { TextField, Button, Paper, Box } from "@mui/material";
+import { TextField, Button, Box } from "@mui/material";
 
-interface Props {
+interface StudentFormProps {
   student?: Student;
-  onSubmit: (student: Partial<Student>) => void;
+  onSubmit: (data: Partial<Student>) => void;
 }
 
-const StudentForm = ({ student, onSubmit }: Props) => {
-  const [name, setName] = useState(student?.name || "");
-  const [email, setEmail] = useState(student?.email || "");
+const StudentForm = ({ student, onSubmit }: StudentFormProps) => {
+  const [firstName, setFirstName] = useState(student?.first_name || "");
+  const [lastName, setLastName] = useState(student?.last_name || "");
+  const [enrollmentDate, setEnrollmentDate] = useState(student?.enrollment_date || "");
+  const [gradeLevel, setGradeLevel] = useState(student?.grade_level || "");
+
+  useEffect(() => {
+    if (student) {
+      setFirstName(student.first_name);
+      setLastName(student.last_name);
+      setEnrollmentDate(student.enrollment_date);
+      setGradeLevel(student.grade_level);
+    } else {
+      setFirstName("");
+      setLastName("");
+      setEnrollmentDate("");
+      setGradeLevel("");
+    }
+  }, [student]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit({ name, email });
+    onSubmit({
+      first_name: firstName,
+      last_name: lastName,
+      enrollment_date: enrollmentDate,
+      grade_level: gradeLevel,
+    });
   };
 
   return (
-    <Paper sx={{ p: 3, mb: 3 }}>
-      <Box
-        component="form"
-        onSubmit={handleSubmit}
-        sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}
-      >
-        <TextField
-          label="Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          fullWidth
-        />
-        <TextField
-          label="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          fullWidth
-        />
-        <Button variant="contained" type="submit">
-          Save
-        </Button>
-      </Box>
-    </Paper>
+    <Box component="form" onSubmit={handleSubmit} mb={2} display="flex" flexDirection="column" gap={2}>
+      <TextField
+        label="First Name"
+        value={firstName}
+        onChange={(e) => setFirstName(e.target.value)}
+      />
+      <TextField
+        label="Last Name"
+        value={lastName}
+        onChange={(e) => setLastName(e.target.value)}
+      />
+      <TextField
+        label="Enrollment Date"
+        type="date"
+        value={enrollmentDate}
+        onChange={(e) => setEnrollmentDate(e.target.value)}
+        InputLabelProps={{ shrink: true }}
+      />
+      <TextField
+        label="Grade Level"
+        value={gradeLevel}
+        onChange={(e) => setGradeLevel(e.target.value)}
+      />
+      <Button type="submit" variant="contained">Save</Button>
+    </Box>
   );
 };
 

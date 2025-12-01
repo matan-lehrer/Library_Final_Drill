@@ -1,5 +1,8 @@
+// src/types/Student.ts
 export interface Student {
   id: number;
-  name: string;
-  email: string;
+  first_name: string;
+  last_name: string;
+  enrollment_date: string; // YYYY-MM-DD
+  grade_level: string;
 }

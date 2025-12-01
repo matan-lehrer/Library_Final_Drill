@@ -61,7 +61,7 @@ const LoanForm = ({ books, students, onSubmit }: Props) => {
             </MenuItem>
             {students.map((s) => (
               <MenuItem key={s.id} value={s.id}>
-                {s.name}
+                {`${s.first_name} ${s.last_name}`}
               </MenuItem>
             ))}
           </Select>

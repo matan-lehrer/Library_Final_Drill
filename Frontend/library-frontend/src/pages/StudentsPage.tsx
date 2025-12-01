@@ -57,16 +57,20 @@ const StudentsPage = () => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Name</TableCell>
-              <TableCell>Email</TableCell>
+              <TableCell>First Name</TableCell>
+              <TableCell>Last Name</TableCell>
+              <TableCell>Enrollment Date</TableCell>
+              <TableCell>Grade Level</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {students.map((s) => (
               <TableRow key={s.id}>
-                <TableCell>{s.name}</TableCell>
-                <TableCell>{s.email}</TableCell>
+                <TableCell>{s.first_name}</TableCell>
+                <TableCell>{s.last_name}</TableCell>
+                <TableCell>{s.enrollment_date}</TableCell>
+                <TableCell>{s.grade_level}</TableCell>
                 <TableCell>
                   <Button
                     onClick={() => setEditingStudent(s)}
