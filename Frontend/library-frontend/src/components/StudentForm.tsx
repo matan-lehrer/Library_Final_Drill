@@ -1,5 +1,7 @@
+// src/components/StudentForm.tsx
 import { useState } from "react";
 import { Student } from "../types/Student";
+import { TextField, Button, Paper, Box } from "@mui/material";
 
 interface Props {
   student?: Student;
@@ -16,17 +18,29 @@ const StudentForm = ({ student, onSubmit }: Props) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label>Name:</label>
-        <input value={name} onChange={(e) => setName(e.target.value)} />
-      </div>
-      <div>
-        <label>Email:</label>
-        <input value={email} onChange={(e) => setEmail(e.target.value)} />
-      </div>
-      <button type="submit">Save</button>
-    </form>
+    <Paper sx={{ p: 3, mb: 3 }}>
+      <Box
+        component="form"
+        onSubmit={handleSubmit}
+        sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}
+      >
+        <TextField
+          label="Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          fullWidth
+        />
+        <TextField
+          label="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          fullWidth
+        />
+        <Button variant="contained" type="submit">
+          Save
+        </Button>
+      </Box>
+    </Paper>
   );
 };
 

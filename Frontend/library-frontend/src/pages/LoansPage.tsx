@@ -1,3 +1,4 @@
+// src/pages/LoansPage.tsx
 import { useEffect, useState } from "react";
 import { Book } from "../types/Book";
 import { Student } from "../types/Student";
@@ -6,6 +7,18 @@ import { booksService } from "../api/books";
 import { studentsService } from "../api/students";
 import { loansService } from "../api/loans";
 import LoanForm from "../components/LoanForm";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Button,
+  Typography,
+  Box
+} from "@mui/material";
 
 const LoansPage = () => {
   const [loans, setLoans] = useState<BookLoan[]>([]);
@@ -44,21 +57,55 @@ const LoansPage = () => {
     fetchStudents();
   }, []);
 
+  const getBookTitle = (id: number) => books.find((b) => b.id === id)?.title || id;
+  const getStudentName = (id: number) =>
+    students.find((s) => s.id === id)?.name || id;
+
   return (
-    <div>
-      <h1>Loans</h1>
+    <Box>
+      <Typography variant="h4" mb={2}>Loans</Typography>
 
       <LoanForm books={books} students={students} onSubmit={handleIssueLoan} />
 
-      <ul>
-        {loans.map((l) => (
-          <li key={l.id}>
-            Book ID: {l.book_id} | Student ID: {l.student_id} | Loaned: {l.loan_date} | Returned: {l.return_date ?? "Not yet"}
-            {!l.return_date && <button onClick={() => handleReturnLoan(l)}>Return</button>}
-          </li>
-        ))}
-      </ul>
-    </div>
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Book</TableCell>
+              <TableCell>Student</TableCell>
+              <TableCell>Loan Date</TableCell>
+              <TableCell>Return Date</TableCell>
+              <TableCell>Actions</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {loans.map((l) => (
+              <TableRow key={l.id}>
+                <TableCell>{getBookTitle(l.book_id)}</TableCell>
+                <TableCell>{getStudentName(l.student_id)}</TableCell>
+                <TableCell>{new Date(l.loan_date).toLocaleDateString()}</TableCell>
+                <TableCell>
+                  {l.return_date
+                    ? new Date(l.return_date).toLocaleDateString()
+                    : "Not yet"}
+                </TableCell>
+                <TableCell>
+                  {!l.return_date && (
+                    <Button
+                      onClick={() => handleReturnLoan(l)}
+                      variant="outlined"
+                      color="success"
+                    >
+                      Return
+                    </Button>
+                  )}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Box>
   );
 };
 

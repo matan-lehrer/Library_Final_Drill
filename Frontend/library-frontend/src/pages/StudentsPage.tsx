@@ -1,7 +1,20 @@
+// src/pages/StudentsPage.tsx
 import { useEffect, useState } from "react";
 import { Student } from "../types/Student";
 import { studentsService } from "../api/students";
 import StudentForm from "../components/StudentForm";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Button,
+  Typography,
+  Box
+} from "@mui/material";
 
 const StudentsPage = () => {
   const [students, setStudents] = useState<Student[]>([]);
@@ -32,21 +45,50 @@ const StudentsPage = () => {
   }, []);
 
   return (
-    <div>
-      <h1>Students</h1>
+    <Box>
+      <Typography variant="h4" mb={2}>Students</Typography>
 
-      <StudentForm student={editingStudent ?? undefined} onSubmit={handleCreateOrUpdate} />
+      <StudentForm
+        student={editingStudent ?? undefined}
+        onSubmit={handleCreateOrUpdate}
+      />
 
-      <ul>
-        {students.map((s) => (
-          <li key={s.id}>
-            {s.name} ({s.email})
-            <button onClick={() => setEditingStudent(s)}>Edit</button>
-            <button onClick={() => handleDelete(s.id)}>Delete</button>
-          </li>
-        ))}
-      </ul>
-    </div>
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Name</TableCell>
+              <TableCell>Email</TableCell>
+              <TableCell>Actions</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {students.map((s) => (
+              <TableRow key={s.id}>
+                <TableCell>{s.name}</TableCell>
+                <TableCell>{s.email}</TableCell>
+                <TableCell>
+                  <Button
+                    onClick={() => setEditingStudent(s)}
+                    variant="outlined"
+                    sx={{ mr: 1 }}
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    onClick={() => handleDelete(s.id)}
+                    variant="outlined"
+                    color="error"
+                  >
+                    Delete
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Box>
   );
 };
 

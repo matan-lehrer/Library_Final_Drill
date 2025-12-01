@@ -1,5 +1,7 @@
+// src/components/BookForm.tsx
 import { useState } from "react";
 import { Book } from "../types/Book";
+import { TextField, Button, Paper, Box } from "@mui/material";
 
 interface Props {
   book?: Book;
@@ -17,26 +19,37 @@ const BookForm = ({ book, onSubmit }: Props) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label>Title:</label>
-        <input value={title} onChange={(e) => setTitle(e.target.value)} />
-      </div>
-      <div>
-        <label>Author:</label>
-        <input value={author} onChange={(e) => setAuthor(e.target.value)} />
-      </div>
-      <div>
-        <label>Copies:</label>
-        <input
+    <Paper sx={{ p: 3, mb: 3 }}>
+      <Box
+        component="form"
+        onSubmit={handleSubmit}
+        sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}
+      >
+        <TextField
+          label="Title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          fullWidth
+        />
+        <TextField
+          label="Author"
+          value={author}
+          onChange={(e) => setAuthor(e.target.value)}
+          fullWidth
+        />
+        <TextField
+          label="Copies"
           type="number"
-          min={1}
+          inputProps={{ min: 1 }}
           value={copies}
           onChange={(e) => setCopies(Number(e.target.value))}
+          sx={{ width: 120 }}
         />
-      </div>
-      <button type="submit">Save</button>
-    </form>
+        <Button variant="contained" type="submit">
+          Save
+        </Button>
+      </Box>
+    </Paper>
   );
 };
 
