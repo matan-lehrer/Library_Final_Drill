@@ -1,7 +1,8 @@
-# endpoints/students.py
+# /endpoints/students.py
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
+from sqlalchemy import select
 
 from schemas.students import StudentCreate, Student
 from crud.students import create_student, get_students
@@ -23,7 +24,8 @@ def read_students(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)
 
 @router.get("/{student_id}", response_model=Student)
 def get_student(student_id: int, db: Session = Depends(get_db)):
-    student = db.query(StudentModel).filter(StudentModel.student_id == student_id).first()
+    stmt = select(StudentModel).where(StudentModel.student_id == student_id)
+    student = db.execute(stmt).scalar_one_or_none()
     if not student:
         raise HTTPException(status_code=404, detail="Student not found")
     return student
@@ -31,7 +33,8 @@ def get_student(student_id: int, db: Session = Depends(get_db)):
 
 @router.put("/{student_id}", response_model=Student)
 def update_student(student_id: int, updated_student: StudentCreate, db: Session = Depends(get_db)):
-    student = db.query(StudentModel).filter(StudentModel.student_id == student_id).first()
+    stmt = select(StudentModel).where(StudentModel.student_id == student_id)
+    student = db.execute(stmt).scalar_one_or_none()
     if not student:
         raise HTTPException(status_code=404, detail="Student not found")
     for key, value in updated_student.model_dump().items():
@@ -43,7 +46,8 @@ def update_student(student_id: int, updated_student: StudentCreate, db: Session 
 
 @router.delete("/{student_id}", response_model=dict)
 def delete_student(student_id: int, db: Session = Depends(get_db)):
-    student = db.query(StudentModel).filter(StudentModel.student_id == student_id).first()
+    stmt = select(StudentModel).where(StudentModel.student_id == student_id)
+    student = db.execute(stmt).scalar_one_or_none()
     if not student:
         raise HTTPException(status_code=404, detail="Student not found")
     db.delete(student)

@@ -1,7 +1,8 @@
-# endpoints/books.py
+# /endpoints/books.py
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
+from sqlalchemy import select
 
 from schemas.books import BookCreate, Book
 from crud.books import create_book, get_books
@@ -23,7 +24,8 @@ def read_books(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
 
 @router.get("/{book_id}", response_model=Book)
 def get_book(book_id: int, db: Session = Depends(get_db)):
-    book = db.query(BookModel).filter(BookModel.book_id == book_id).first()
+    stmt = select(BookModel).where(BookModel.book_id == book_id)
+    book = db.execute(stmt).scalar_one_or_none()
     if not book:
         raise HTTPException(status_code=404, detail="Book not found")
     return book
@@ -31,7 +33,8 @@ def get_book(book_id: int, db: Session = Depends(get_db)):
 
 @router.put("/{book_id}", response_model=Book)
 def update_book(book_id: int, updated_book: BookCreate, db: Session = Depends(get_db)):
-    book = db.query(BookModel).filter(BookModel.book_id == book_id).first()
+    stmt = select(BookModel).where(BookModel.book_id == book_id)
+    book = db.execute(stmt).scalar_one_or_none()
     if not book:
         raise HTTPException(status_code=404, detail="Book not found")
     for key, value in updated_book.model_dump().items():
@@ -43,7 +46,8 @@ def update_book(book_id: int, updated_book: BookCreate, db: Session = Depends(ge
 
 @router.delete("/{book_id}", response_model=dict)
 def delete_book(book_id: int, db: Session = Depends(get_db)):
-    book = db.query(BookModel).filter(BookModel.book_id == book_id).first()
+    stmt = select(BookModel).where(BookModel.book_id == book_id)
+    book = db.execute(stmt).scalar_one_or_none()
     if not book:
         raise HTTPException(status_code=404, detail="Book not found")
     db.delete(book)

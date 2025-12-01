@@ -1,9 +1,6 @@
+# /main.py
 from fastapi import FastAPI
 from database import Base, engine
-
-import models.books
-import models.students
-import models.book_loans
 
 Base.metadata.create_all(bind=engine)
 

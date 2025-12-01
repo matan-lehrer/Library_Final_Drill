@@ -1,4 +1,6 @@
+# /crud/books.py
 from sqlalchemy.orm import Session
+from sqlalchemy import select
 from models.books import Book as BookModel
 from schemas.books import BookCreate, Book
 
@@ -10,4 +12,5 @@ def create_book(db: Session, book: BookCreate):
     return db_book
 
 def get_books(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(BookModel).offset(skip).limit(limit).all()
+    stmt = select(BookModel).offset(skip).limit(limit)
+    return db.execute(stmt).scalars().all()

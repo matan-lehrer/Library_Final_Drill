@@ -1,4 +1,6 @@
+# /crud/book_loans.py
 from sqlalchemy.orm import Session
+from sqlalchemy import select
 from datetime import date
 from models.book_loans import BookLoan as BookLoanModel
 from models.books import Book as BookModel
@@ -6,7 +8,8 @@ from schemas.book_loans import BookLoanCreate, BookLoan
 
 def create_book_loan(db: Session, loan: BookLoanCreate):
     # Reduce available_copies by 1
-    book = db.query(BookModel).filter(BookModel.book_id == loan.book_id).first()
+    stmt = select(BookModel).where(BookModel.book_id == loan.book_id)
+    book = db.execute(stmt).scalar_one_or_none()
     if book.available_copies <= 0:
         raise ValueError("No available copies of this book")
     book.available_copies -= 1
@@ -18,13 +21,15 @@ def create_book_loan(db: Session, loan: BookLoanCreate):
     return db_loan
 
 def return_book(db: Session, loan_id: int, return_date: date):
-    loan = db.query(BookLoanModel).filter(BookLoanModel.loan_id == loan_id).first()
+    stmt = select(BookLoanModel).where(BookLoanModel.loan_id == loan_id)
+    loan = db.execute(stmt).scalar_one_or_none()
     if not loan:
         raise ValueError("Loan not found")
     loan.return_date = return_date
 
     # Increase available copies
-    book = db.query(BookModel).filter(BookModel.book_id == loan.book_id).first()
+    stmt_book = select(BookModel).where(BookModel.book_id == loan.book_id)
+    book = db.execute(stmt_book).scalar_one_or_none()
     book.available_copies += 1
 
     db.commit()
@@ -32,4 +37,5 @@ def return_book(db: Session, loan_id: int, return_date: date):
     return loan
 
 def get_loans(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(BookLoanModel).offset(skip).limit(limit).all()
+    stmt = select(BookLoanModel).offset(skip).limit(limit)
+    return db.execute(stmt).scalars().all()
